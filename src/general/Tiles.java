@@ -13,9 +13,15 @@ import javax.imageio.ImageIO;
 public class Tiles {
 	public final int size;
 	private final Font font;
+	private final Font font_small;
 	
 	public final BufferedImage floor;
 	public final BufferedImage wall;
+	public final BufferedImage player;
+	
+	public final BufferedImage camera;
+	public final BufferedImage relay;
+	public final BufferedImage patrol;
 	
 	private final String TILES_DIR = "./src/tile/";
 	public Tiles() {
@@ -23,30 +29,43 @@ public class Tiles {
 		
 		InputStream input = getClass().getResourceAsStream("/font/Inconsolata-Regular.TTF");
 		Font f = null;
+		Font f_small = null;
 		try {
 			f = Font.createFont(Font.TRUETYPE_FONT, input).deriveFont(Font.PLAIN, size);
+			f_small = Font.createFont(Font.TRUETYPE_FONT, input).deriveFont(Font.PLAIN, size);//Draw floor if empty
+				BufferedImage tile = null;
+				if(map[x][y] == null) {
+					tile = tiles.floor;
+				} else {
+					tile = map[x][y].getTile();
+				}
+				g.drawImage(tile, x * tiles.size, y * tiles.size, null);
 		} catch (FontFormatException | IOException e) {
 			f = new Font("Consolas", Font.PLAIN, size);
+			f_small = new Font("Consolas", FONT.PLAIN, size/2);
 			e.printStackTrace();
 		}
 		font = f;
+		font_small = f_small;
 		
-		BufferedImage floor = generateTile('.');
-		try {
-			floor = ImageIO.read(new File(TILES_DIR + "floor.png"));
-		} catch(Exception e) {
-			System.out.println("Using default floor tile");
-		}
-		this.floor = floor;
+		floor = loadTile("floor.png", '.');
+		wall = loadTile("wall.png", '#');
+		player = loadTile("player.png", '@');
 		
-		BufferedImage wall = generateTile('#');
-		try {
-			wall = ImageIO.read(new File(TILES_DIR + "wall.png"));
-		} catch(Exception e) {
-			System.out.println("Using default wall tile");
-		}
-		this.wall = wall;
+		camera = loadTile("camera.png", '*');
+		relay = loadTile("relay.png", '%');
+		patrol = loadTile("patrol.png", 'a');
 	}
+	//Loads a tile from the specified image filename (from src/tile) or defaults to the specified char
+	public BufferedImage loadTile(String filename, char defaultChar) {
+		try {
+			return ImageIO.read(new File(TILE_DIR + filename));
+		} catch(Exception e) {
+			System.out.println("Using " defaultChar + " in place of " + filename);
+			return generateTile(defaultChar);
+		}
+	}
+	//Generates a 24x24 tile from the specified char
 	public BufferedImage generateTile(char c) {
 		BufferedImage result = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 		
