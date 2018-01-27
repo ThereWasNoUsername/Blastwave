@@ -3,9 +3,12 @@ import javax.swing.JFrame;
 
 public class Game {
 	public static void main(String[] args) {
+		System.setProperty("sun.java2d.opengl", "true");
 		JFrame frame = new JFrame();
 		World world = new World();
-		frame.add(new Panel(world));
+		Panel panel = new Panel(world);
+		frame.add(panel);
+		frame.addKeyListener(panel);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.pack();
 		frame.setVisible(true);

@@ -10,7 +10,6 @@ public class Panel extends JPanel implements KeyListener {
 	private World world;
 	public Panel(World world) {
 		this.world = world;
-		addKeyListener(this);
 	}
 	public void paint(Graphics g) {
 		//Clear the screen
@@ -23,20 +22,25 @@ public class Panel extends JPanel implements KeyListener {
 	}
 	@Override
 	public void keyPressed(KeyEvent arg0) {
-		switch(arg0.GetKeyCode()) {
+		System.out.println("Key pressed");
+		switch(arg0.getKeyCode()) {
 			case KeyEvent.VK_UP:
+				System.out.println("Up");
 				world.player.setDirection(Direction.UP);
 				repaint();
 				break;
 			case KeyEvent.VK_RIGHT:
+				System.out.println("Right");
 				world.player.setDirection(Direction.RIGHT);
 				repaint();
 				break;
 			case KeyEvent.VK_DOWN:
+				System.out.println("Down");
 				world.player.setDirection(Direction.DOWN);
 				repaint();
 				break;
 			case KeyEvent.VK_LEFT:
+				System.out.println("Left");
 				world.player.setDirection(Direction.LEFT);
 				repaint();
 				break;

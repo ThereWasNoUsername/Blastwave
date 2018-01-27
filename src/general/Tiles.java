@@ -12,8 +12,7 @@ import javax.imageio.ImageIO;
 
 public class Tiles {
 	public final int size;
-	private final Font font;
-	private final Font font_small;
+	public final Font font;
 	
 	public final BufferedImage floor;
 	public final BufferedImage wall;
@@ -27,26 +26,16 @@ public class Tiles {
 	public Tiles() {
 		size = 24;
 		
-		InputStream input = getClass().getResourceAsStream("/font/Inconsolata-Regular.TTF");
+		InputStream input = getClass().getResourceAsStream("/Inconsolata-Regular.ttf");
 		Font f = null;
-		Font f_small = null;
 		try {
-			f = Font.createFont(Font.TRUETYPE_FONT, input).deriveFont(Font.PLAIN, size);
-			f_small = Font.createFont(Font.TRUETYPE_FONT, input).deriveFont(Font.PLAIN, size);//Draw floor if empty
-				BufferedImage tile = null;
-				if(map[x][y] == null) {
-					tile = tiles.floor;
-				} else {
-					tile = map[x][y].getTile();
-				}
-				g.drawImage(tile, x * tiles.size, y * tiles.size, null);
+			f = Font.createFont(Font.TRUETYPE_FONT, input).deriveFont(Font.BOLD, size + 6);
 		} catch (FontFormatException | IOException e) {
+			System.out.println("Using default font");
 			f = new Font("Consolas", Font.PLAIN, size);
-			f_small = new Font("Consolas", FONT.PLAIN, size/2);
 			e.printStackTrace();
 		}
 		font = f;
-		font_small = f_small;
 		
 		floor = loadTile("floor.png", '.');
 		wall = loadTile("wall.png", '#');
@@ -59,9 +48,9 @@ public class Tiles {
 	//Loads a tile from the specified image filename (from src/tile) or defaults to the specified char
 	public BufferedImage loadTile(String filename, char defaultChar) {
 		try {
-			return ImageIO.read(new File(TILE_DIR + filename));
+			return ImageIO.read(new File(TILES_DIR + filename));
 		} catch(Exception e) {
-			System.out.println("Using " defaultChar + " in place of " + filename);
+			System.out.println("Using " + defaultChar + " in place of " + filename);
 			return generateTile(defaultChar);
 		}
 	}

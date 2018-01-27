@@ -16,5 +16,10 @@ public abstract class Entity {
 	public void setPos(Point pos) {
 		this.pos = pos;
 	}
+	public abstract double getOpacity();
 	public abstract BufferedImage getTile();
+	public abstract void alertCamera();
+	public abstract void markVisibility();
+	
+	//TO DO: Add sound calculations and alerts to update()
 }
