@@ -69,7 +69,7 @@ public class World {
 		return brightness[pos.x][pos.y];
 	}
 	public void alertCamera(Point cameraPos, int range) {
-		addMessage("You've been spotted by a camera!");
+		//addMessage("You've been spotted by a camera!");
 		try {
 			throw new Exception("Implement alertCamera");
 		} catch (Exception e) {
@@ -91,6 +91,9 @@ public class World {
 	}
 	public void addMessage(String message) {
 		messages.add(message);
+	}
+	public void clearMessages() {
+		messages.clear();
 	}
 	public void addEntity(Entity e, Point pos) {
 		map[pos.x][pos.y] = e;

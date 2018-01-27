@@ -60,12 +60,6 @@ public class Player extends Entity {
 					}
 					
 				}
-				try {
-					throw new Exception("Implement");
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
 		}
 	}
