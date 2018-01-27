@@ -23,6 +23,24 @@ public class Panel extends JPanel implements KeyListener {
 	}
 	@Override
 	public void keyPressed(KeyEvent arg0) {
+		switch(arg0.GetKeyCode()) {
+			case KeyEvent.VK_UP:
+				world.player.setDirection(Direction.UP);
+				repaint();
+				break;
+			case KeyEvent.VK_RIGHT:
+				world.player.setDirection(Direction.RIGHT);
+				repaint();
+				break;
+			case KeyEvent.VK_DOWN:
+				world.player.setDirection(Direction.DOWN);
+				repaint();
+				break;
+			case KeyEvent.VK_LEFT:
+				world.player.setDirection(Direction.LEFT);
+				repaint();
+				break;
+		}
 	}
 	@Override
 	public void keyReleased(KeyEvent arg0) {
