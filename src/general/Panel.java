@@ -85,7 +85,7 @@ public class Panel extends JPanel implements KeyListener {
 		switch(intro) {
 		case 5:
 			world.clearMessages();
-			world.addMessage("\"Mind Waves\"");
+			world.addMessage("\"Brain Waves\"");
 			world.addMessage("By Alex Chen (achen115@ucr.edu)");
 			world.addMessage("A strategic stealth roguelike");
 			world.addMessage("Made for Global Game Jam 2018.");

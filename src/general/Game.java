@@ -5,7 +5,7 @@ public class Game {
 	public static void main(String[] args) {
 		try {
 		System.setProperty("sun.java2d.opengl", "true");
-		JFrame frame = new JFrame();
+		JFrame frame = new JFrame("Brain Waves by Alex Chen");
 		World world;
 		
 		//User can specify a custom level here
