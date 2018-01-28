@@ -196,6 +196,7 @@ public class Panel extends JPanel implements KeyListener {
 			world.addMessage("! |     Camera    Deactivated Camera");
 			world.addMessage("% /     Relay     Deactivated Relay");
 			world.addMessage("A a     Guard     Stunned guard");
+			world.addMessage("X       Exit");
 			world.addMessage(".       Floor");
 			world.addMessage("#       Wall");
 			world.addMessage("");

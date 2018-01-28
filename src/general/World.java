@@ -162,6 +162,8 @@ public class World {
 					addMessage("You see a Relay. Don't be seen by a Camera or everyone will know.");
 				} else if(e instanceof Guard) {
 					addMessage("You see a Guard. Get away before they kill you.");
+				} else if(e instanceof Exit) {
+					addMessage("You see an exit. Let's get out of here!");
 				}
 			}
 		}
