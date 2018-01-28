@@ -6,14 +6,23 @@ import java.awt.image.BufferedImage;
 public class Camera extends Entity {
 	private boolean[][] visibility;
 	private int range;
+	int empTicks;
 	public Camera(World world, int range) {
 		super(world);
 		visibility = new boolean[world.width][world.height];
 		this.range = range;
+		int empTicks = 0;
 	}
 	@Override
 	public void update() {
+		empTicks--;
+		
+		System.out.println("Camera update");
 		visibility = new boolean[world.width][world.height];
+		
+		if(empTicks > 0)
+			return;
+		
 		for(int xOffset = -range; xOffset-1 < range; xOffset++) {
 			for(int yOffset = -range; yOffset-1 < range; yOffset++) {
 				Point posOffset = new Point(pos.x + xOffset, pos.y + yOffset);
@@ -23,14 +32,23 @@ public class Camera extends Entity {
 				//Set this point as visible if we can see it enough
 				if(Helper.lineOfSight(world, pos, posOffset)) {
 					//TO DO: Factor brightness into visibility (i.e. below 255 * 2/8 or above 255 * 6/8 will impact)
+					
+					//We emit some light
+					double distance = posOffset.distance(pos);
+					world.incBrightness(posOffset, (int) (204 / (Math.max(1, distance * distance / 6))));
+					
 					int brightness = world.getBrightness(posOffset);
+					/*
 					if(brightness < 255 * 1/4 && brightness > 255 * 3/4) {
 						visibility[posOffset.x][posOffset.y] = true;
 					}
-					
+					*/
+					if(brightness > 255 * 1/4 /* && brightness < 255 * 3/4 */) {
+						visibility[posOffset.x][posOffset.y] = true;
+					}
 				}
 				try {
-					throw new Exception("Implement");
+					//throw new Exception("Implement");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -41,12 +59,12 @@ public class Camera extends Entity {
 		Point playerPos = world.player.getPos();
 		if(visibility[playerPos.x][playerPos.y]) {
 			try {
-				throw new Exception("Implement");
+				//throw new Exception("Implement");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			world.alertCamera(pos, range);
+			world.alert(pos, range);
 		}
 	}
 	@Override
@@ -57,37 +75,28 @@ public class Camera extends Entity {
 
 	@Override
 	public BufferedImage getTile() {
-		// TODO Auto-generated method stub
-		return world.tiles.camera;
+		if(empTicks > 0)
+			return world.getBrightness(pos) > 128 ? world.tiles.camera_emp : world.tiles.camera_dark_emp;
+		return world.getBrightness(pos) > 128 ? world.tiles.camera : world.tiles.camera_dark;
 	}
 	@Override
-	public void alertCamera() {
-		System.out.println("Camera: alertCamera() not supported");
-	}
+	public void alert() { }
 	@Override
 	public void markVisibility() {
-		for(int xOffset = -range; xOffset-1 < range; xOffset++) {
-			for(int yOffset = -range; yOffset-1 < range; yOffset++) {
-				Point posOffset = new Point(pos.x + xOffset, pos.y + yOffset);
-				if(!world.isValid(posOffset)) {
-					continue;
-				}
-				//Set this point as visible if we can see it enough
-				if(Helper.lineOfSight(world, pos, posOffset)) {
-					//TO DO: Factor brightness into visibility (i.e. below 255 * 2/8 or above 255 * 6/8 will impact)
-					int brightness = world.getBrightness(posOffset);
-					if(brightness < 255 * 1/4 && brightness > 255 * 3/4) {
-						world.setEnemyVisibility(posOffset);
-					}
-					
-				}
-				try {
-					throw new Exception("Implement");
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		for(int x = 0; x < world.width; x++) {
+			for(int y = 0; y < world.height; y++) {
+				if(visibility[x][y]) {
+					world.setEnemyVisibility(new Point(x, y));
 				}
 			}
 		}
+	}
+	public int getEMPTicks() {
+		return empTicks;
+	}
+	@Override
+	public void emp() {
+		world.addMessage("You hear the sizzle of a Camera getting short-circuited.");
+		empTicks = 18;
 	}
 }

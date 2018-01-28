@@ -18,8 +18,12 @@ public abstract class Entity {
 	}
 	public abstract double getOpacity();
 	public abstract BufferedImage getTile();
-	public abstract void alertCamera();
+	public abstract void alert();
 	public abstract void markVisibility();
+	public abstract void emp();
+	public int getEMPTicks() {
+		return 0;
+	}
 	
 	//TO DO: Add sound calculations and alerts to update()
 }

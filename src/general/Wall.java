@@ -13,10 +13,12 @@ public class Wall extends Entity {
 	public void update() {
 	}
 	public BufferedImage getTile() {
-		return world.tiles.wall;
+		return world.getBrightness(pos) > 128 ? world.tiles.wall : world.tiles.wall_dark;
 	}
 	@Override
-	public void alertCamera() { System.out.println("Wall: alertCamera() not supported");}
+	public void alert() { }
 	@Override
 	public void markVisibility() { }
+	@Override
+	public void emp() { }
 }
