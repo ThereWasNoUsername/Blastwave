@@ -86,7 +86,7 @@ public class Panel extends JPanel implements KeyListener {
 		case 5:
 			world.clearMessages();
 			world.addMessage("\"Mind Waves\"");
-			world.addMessage("By Alex Chen");
+			world.addMessage("By Alex Chen (achen115@ucr.edu)");
 			world.addMessage("A strategic stealth roguelike");
 			world.addMessage("Made for Global Game Jam 2018.");
 			world.addMessage("Theme: \"Transmission\"");
@@ -131,7 +131,7 @@ public class Panel extends JPanel implements KeyListener {
 			world.addMessage("Press F to unleash a wave blast that disables nearby lights...");
 			world.addMessage("Along with nearby wireless communications.");
 			world.addMessage("It also creates a huge distraction and dazes guards.");
-			world.addMessage("Remember: Stay dark, stay quiet, and stay out of sight.");
+			world.addMessage("Remember: Stay dark, stay quiet, and stay out of red.");
 			world.addMessage("Don't forget to use your wave blast to save yourself!");
 			world.addMessage("[Press Enter]");
 			intro--;
@@ -141,10 +141,10 @@ public class Panel extends JPanel implements KeyListener {
 			world.clearMessages();
 			world.addMessage("[Char]  [Object]");
 			world.addMessage("@       Player");
-			world.addMessage("*       Light");
-			world.addMessage("!       Camera");
-			world.addMessage("%       Relay");
-			world.addMessage("A       Guard");
+			world.addMessage("* -     Light     Deactivated light");
+			world.addMessage("! |     Camera    Deactivated Camera");
+			world.addMessage("% /     Relay     Deactivated Relay");
+			world.addMessage("A a     Guard     Stunned guard");
 			world.addMessage(".       Floor");
 			world.addMessage("#       Wall");
 			world.addMessage("");
