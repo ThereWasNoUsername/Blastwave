@@ -36,7 +36,7 @@ public class Exit extends Entity {
 	@Override
 	public BufferedImage getTile() {
 		// TODO Auto-generated method stub
-		return world.tiles.exit;
+		return world.res.exit;
 	}
 
 	@Override

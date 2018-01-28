@@ -13,7 +13,7 @@ public class Wall extends Entity {
 	public void update() {
 	}
 	public BufferedImage getTile() {
-		return world.getBrightness(pos) > 128 ? world.tiles.wall : world.tiles.wall_dark;
+		return world.getBrightness(pos) > 128 ? world.res.wall : world.res.wall_dark;
 	}
 	@Override
 	public void alert() { }

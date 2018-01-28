@@ -8,6 +8,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 public class Guard extends Entity {
 	private Point targetPos;
 	private boolean[][] visibility;
@@ -26,7 +30,7 @@ public class Guard extends Entity {
 	public void update() {
 		//EMP slows down guards
 		empTicks--;
-		if((empTicks%3) > 0)
+		if((empTicks%4) > 0)
 			return;
 		int range = 30;
 		visibility = new boolean[world.width][world.height];
@@ -55,11 +59,16 @@ public class Guard extends Entity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			Helper.playSound(world.res.sound_spotted, -5);
+			world.addMessage("You've been spotted!");
+			
 			world.alert(pos, range);
 			targetPos = playerPos;
 			
 			//Attempt to shoot the player
 			if(playerPos.distance(pos) > 3) {
+				Helper.playSound(world.res.sound_shoot, 1);
+				
 				//The first shots are guaranteed misses
 				boolean miss = false;
 				if(empTicks > 0 && empTicks%2 == 0) {
@@ -95,6 +104,8 @@ public class Guard extends Entity {
 						}
 					}
 				} else {
+					Helper.playSound(world.res.sound_strike, 3);
+					
 					world.killPlayer("The guard shoots you down!");
 				}
 			}
@@ -109,8 +120,7 @@ public class Guard extends Entity {
 						break;
 					}
 				}
-			}
-			if(pos.distance(targetPos) < 4) {
+			} else if(pos.distance(targetPos) < 4) {
 				//Extend our current path randomly
 				
 				Point displacement = new Point(targetPos.x - pos.x, targetPos.y - pos.y);
@@ -132,7 +142,7 @@ public class Guard extends Entity {
 				Collections.shuffle(next);
 				
 				for(Point p : next) {
-					if(world.isOpen(p)) {
+					if(world.isValid(p) && world.isOpen(p)) {
 						targetPos = p;
 						break;
 					}
@@ -162,12 +172,18 @@ public class Guard extends Entity {
 			
 			for(Point p : next) {
 				if(world.isOpen(p)) {
-					world.move(this, p);
+					//Guard is slightly slower than the player
+					if(Math.random() > 0.15) {
+						world.move(this, p);
+					}
+					
 					break;
 				} else if(world.getAt(p) == world.player) {
-					if(empTicks > 0 && empTicks%5 > 0) {
+					if(empTicks > 0) {
+						Helper.playSound(world.res.sound_strike, 2);
 						world.addMessage("A dazed guard attempts to strike you down, but misses.");
 					} else {
+						Helper.playSound(world.res.sound_strike, 2);
 						world.killPlayer("The guard strikes you down with a metal baton.");
 					}
 					
@@ -214,9 +230,9 @@ public class Guard extends Entity {
 	@Override
 	public BufferedImage getTile() {
 		if(empTicks > 0) {
-			return world.getBrightness(pos) > 128 ? world.tiles.patrol_emp : world.tiles.patrol_dark_emp; 
+			return world.getBrightness(pos) > 128 ? world.res.patrol_emp : world.res.patrol_dark_emp; 
 		}
-		return world.getBrightness(pos) > 128 ? world.tiles.patrol : world.tiles.patrol_dark;
+		return world.getBrightness(pos) > 128 ? world.res.patrol : world.res.patrol_dark;
 	}
 
 	@Override
@@ -293,8 +309,9 @@ public class Guard extends Entity {
 	}
 	@Override
 	public void emp() {
-		world.addMessage("You hear a guard swearing over their broken communicator.");
-		empTicks = 12;
+		world.addMessage("You hear a guard fall over.");
+		//empTicks = 16;
+		empTicks += 7;
 	}
 
 }

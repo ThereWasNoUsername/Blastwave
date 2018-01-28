@@ -11,8 +11,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -23,13 +26,15 @@ public class World {
 	private final	Entity[][] map;
 	public final	Player player;
 	private			int[][] brightness;		//Intensity of light on each tile, 0-255
-	public final	Tiles tiles;			//Contains images for the tileset
+	public final	Resources res;			//Contains images for the tileset
 	boolean[][] enemyVisible;				//If true, the player knows that the enemy sees this tile
 	private	boolean[][] playerVisible;	//If true, the player can see this tile
 	private final List<String> messages;
 	private final List<Integer> messageTimes;
 	private String deathMessage;
 	
+	public final String filename;
+	/*
 	public World() {
 		width = 128;
 		height = 128;
@@ -63,13 +68,15 @@ public class World {
 		removeEntity(new Point(10, 5));
 		removeEntity(new Point(10, 15));
 	}
+	*/
 	public World(String filename) throws IOException {
+		this.filename = filename;
 		byte[] encoded = Files.readAllBytes(Paths.get(filename));
 		String level = new String(encoded, StandardCharsets.UTF_8);
 		String[] parts = level.split("\n");
 		width = parts[0].length();
 		height = parts.length;
-		tiles = new Tiles();
+		res = new Resources();
 		map = new Entity[width][height];
 		brightness = new int[width][height];
 		playerVisible = new boolean[width][height];
@@ -129,13 +136,19 @@ public class World {
 		playerVisible = new boolean[width][height];
 		player.update();
 		
-		entities.remove(player);
+		//If we escape this turn, then end
+		if(player.getState() == PlayerState.ESCAPED) {
+			return;
+		}
 		
 		enemyVisible = new boolean[width][height];
-		
-		
+		entities.remove(player);
 		for(Entity e : entities) {
-			e.update();
+			//If the entity is no longer on the map at its position, then it's been killed so we don't update
+			Point p = e.getPos();
+			if(map[p.x][p.y] == e) {
+				e.update();
+			}
 		}
 		player.markVisibility();
 		for(Entity e : entities) {
@@ -143,8 +156,7 @@ public class World {
 				e.markVisibility();
 				if(e instanceof Camera) {
 					addMessage("You see a Camera. Stay out of the red area or you will be seen.");
-				}
-				else if(e instanceof Light) {
+				} else if(e instanceof Light) {
 					addMessage("You see a Light. Stay in the dark or you will be seen.");
 				} else if(e instanceof Relay) {
 					addMessage("You see a Relay. Don't be seen by a Camera or everyone will know.");
@@ -163,6 +175,7 @@ public class World {
 			clearMessages();
 			addMessage(deathMessage);
 			addMessage("You're dead now! Game over!");
+			addMessage("Press Backspace to restart the level or press F to load a custom level.");
 			return;
 		}
 	}
@@ -179,7 +192,6 @@ public class World {
 		return brightness[pos.x][pos.y];
 	}
 	public void alert(Point cameraPos, int range) {
-		addMessage("You've been spotted!");
 		//Alert all entities in range
 		for(int xOffset = -range; xOffset-1 < range; xOffset++) {
 			for(int yOffset = -range; yOffset-1 < range; yOffset++) {
@@ -226,7 +238,7 @@ public class World {
 		map[pos.x][pos.y] = e;
 	}
 	public void paint(JPanel panel, Graphics g) {
-		int tileSize = tiles.size;
+		int tileSize = res.size;
 		g.clearRect(0, 0, panel.getWidth(), panel.getHeight());
 		/*
 		for(int x = 0; x < width; x++) {
@@ -256,15 +268,12 @@ public class World {
 		
 		int drawDistance = 50;
 		
+		//First pass draws objects
 		for(int xOffset = -halfDrawWidthTiles; xOffset-1 < halfDrawWidthTiles+1; xOffset++) {
 			for(int yOffset = -halfDrawHeightTiles; yOffset-1 < halfDrawHeightTiles; yOffset++) {
-				//System.out.println("Painting Tile");
-				//Skip tiles that are beyond draw distance
-				if((xOffset*xOffset) + (yOffset*yOffset) > (drawDistance*drawDistance)) {
-					continue;
-				}
 				Point pos = new Point(playerPos.x + xOffset, playerPos.y + yOffset);
-				int drawX = drawCenterX + (xOffset * tileSize), drawY = drawCenterY - (yOffset * tiles.size);
+				int drawX = drawCenterX + (xOffset * tileSize), drawY = drawCenterY - (yOffset * res.size);
+				
 				//Check out of bounds
 				if(!isValid(pos)) {
 					g.setColor(Color.BLACK);
@@ -284,7 +293,7 @@ public class World {
 				//Draw floor if empty
 				BufferedImage tile = null;
 				if(map[pos.x][pos.y] == null) {
-					tile = getBrightness(pos) > 128 ? tiles.floor : tiles.floor_dark;
+					tile = getBrightness(pos) > 128 ? res.floor : res.floor_dark;
 				} else {
 					tile = map[pos.x][pos.y].getTile();
 				}
@@ -299,10 +308,27 @@ public class World {
 			}
 		}
 		
+		//Second pass draws the EMP radius colors
+		int empRadius = player.getEMPRadius();
+		for(int xOffset = -empRadius; xOffset-1 < empRadius+1; xOffset++) {
+			for(int yOffset = -empRadius; yOffset-1 < empRadius; yOffset++) {
+				Point pos = new Point(playerPos.x + xOffset, playerPos.y + yOffset);
+				int drawX = drawCenterX + (xOffset * tileSize), drawY = drawCenterY - (yOffset * res.size);
+				Point displacement = new Point(Math.abs(pos.x - playerPos.x), Math.abs(pos.y - playerPos.y));
+				
+				if(displacement.x + displacement.y < player.getEMPRadius()) {
+					Random x = new Random(pos.x + playerPos.y);
+					Random y = new Random(pos.x + playerPos.x);
+					g.setColor(new Color(0, x.nextInt(256), y.nextInt(256), 102));
+					g.fillRect(drawX, drawY, tileSize, tileSize);
+				}
+			}
+		}
+		
 		int textDrawX = tileSize;
 		int textDrawY = drawCenterY + halfDrawHeight + tileSize + tileSize;
 		for(int i = 0; i < messages.size(); i++) {
-			g.setFont(tiles.font);
+			g.setFont(res.font);
 			g.setColor(Color.BLACK);
 			String message = messages.get(i);
 			int times = messageTimes.get(i);
@@ -313,7 +339,7 @@ public class World {
 			}
 			
 			g.drawString(message, textDrawX, textDrawY);
-			textDrawY += tiles.font.getSize();
+			textDrawY += res.font.getSize();
 		}
 	}
 	public boolean isValid(Point p) {

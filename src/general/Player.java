@@ -3,6 +3,9 @@ package general;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 import general.Player.PlayerState;
 
 public class Player extends Entity {
@@ -44,8 +47,10 @@ public class Player extends Entity {
 	public void update() {
 		empCooldown--;
 		if(empRadius > 0) {
+			Helper.playSound(world.res.sound_wave_blast, -7);
+			
 			//EMP makes a loud noise
-			world.alert(pos, 40);
+			world.alert(pos, empRadius * 3);
 			
 			empRadius++;
 			
@@ -61,8 +66,9 @@ public class Player extends Entity {
 				}
 			}
 			
-			if(empRadius >= 12) {
+			if(empRadius >= 16) {
 				empRadius = 0;
+				world.addMessage("The air and light return to normal while you are left with a headache");
 			}
 		}
 		
@@ -73,7 +79,9 @@ public class Player extends Entity {
 		} else if(world.getAt(pos_next) instanceof Wall) {
 			world.addMessage("Your path is blocked by a wall!");
 		} else if(world.getAt(pos_next) instanceof Exit) {
+			world.removeEntity(pos);
 			world.addMessage("You have escaped this facility!");
+			world.addMessage("Press Backspace to restart the level or press F to load a custom level.");
 			state = PlayerState.ESCAPED;
 		} else if(world.getAt(pos_next) instanceof Guard && world.getAt(pos_next).getEMPTicks() > 0) {
 			world.addMessage("You punch out the guard while they are dazed.");
@@ -85,7 +93,7 @@ public class Player extends Entity {
 
 	@Override
 	public BufferedImage getTile() {
-		return world.getBrightness(pos) > 128 ? world.tiles.player : world.tiles.player_dark;
+		return world.getBrightness(pos) > 128 ? world.res.player : world.res.player_dark;
 	}
 	@Override
 	public void alert() {
@@ -123,11 +131,17 @@ public class Player extends Entity {
 	@Override
 	public void emp() {}
 	public void activateEMP() {
+		world.clearMessages();
+		world.addMessage("The air rumbles and the light bends as a minor headache descends upon you.");
+		
 		empCooldown = 48;
 		empRadius = 1;
 	}
 	public PlayerState getState() {
 		return state;
+	}
+	public int getEMPRadius() {
+		return empRadius;
 	}
 
 }

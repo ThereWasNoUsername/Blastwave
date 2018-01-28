@@ -1,11 +1,21 @@
 package general;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.IOException;
 
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import general.Player.PlayerState;
 
 public class Panel extends JPanel implements KeyListener {
 	private World world;
@@ -13,10 +23,12 @@ public class Panel extends JPanel implements KeyListener {
 	boolean active;
 	
 	public Panel(World world) {
+		initialize(world);
+	}
+	public void initialize(World world) {
 		this.world = world;
 		world.player.setDirection(Direction.NONE);
 		world.update();
-		
 		intro = 5;
 		intro();
 	}
@@ -32,13 +44,46 @@ public class Panel extends JPanel implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		System.out.println("Key pressed");
-		if(intro > 0) {
+		if(intro > 0 && arg0.getKeyCode() != KeyEvent.VK_L) {
 			if(arg0.getKeyCode() == KeyEvent.VK_ENTER) {
 				intro();
 			}
 			return;
 		}
 		switch(arg0.getKeyCode()) {
+		case KeyEvent.VK_BACK_SPACE:
+			try {
+				initialize(new World(world.filename));
+			} catch (IOException e1) {
+				world.addMessage("Failed to restart level.");
+			}
+			break;
+		case KeyEvent.VK_L:
+			System.out.println("Load");
+			
+			world.clearMessages();
+			world.addMessage("Loading custom level");
+			
+			JFileChooser j = new JFileChooser();
+			j.setFileFilter(new FileNameExtensionFilter("Level files", "txt"));
+			j.setPreferredSize(getSize());
+			
+			j.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			setComponentsFont(j.getComponents(), world.res.font_small);
+			j.setCurrentDirectory(new File(System.getProperty("user.dir")));
+			if(j.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+				try {
+					world.addMessage("Custom level loaded");
+					initialize(new World(j.getSelectedFile().getAbsolutePath()));
+				} catch (IOException e) {
+					world.addMessage("Failed to load custom level");
+				}
+			} else {
+				world.addMessage("Load custom level cancelled");
+			}
+			repaint();
+			
+			break;
 		case KeyEvent.VK_UP:
 			System.out.println("Up");
 			world.player.setDirection(Direction.UP);
@@ -60,9 +105,7 @@ public class Panel extends JPanel implements KeyListener {
 			repaint();
 			break;
 		case KeyEvent.VK_F:
-			if(world.player.getEMPCooldown() < 1) {
-				world.clearMessages();
-				world.addMessage("The air begins to rumble as a minor headache descends upon you.");
+			if(world.player.getState() == PlayerState.ACTIVE && world.player.getEMPCooldown() < 1) {
 				world.player.activateEMP();
 				
 			} else {
@@ -72,6 +115,14 @@ public class Panel extends JPanel implements KeyListener {
 			}
 			repaint();
 			break;
+		}
+	}
+	//https://coderanch.com/t/342116/java/set-font-JFileChooser
+	public static void setComponentsFont(Component[] comp, Font font) {
+		for(int x = 0; x < comp.length; x++) {
+			if(comp[x] instanceof Container) setComponentsFont(((Container)comp[x]).getComponents(), font);
+			try{comp[x].setFont(font);}
+			catch(Exception e){}//do nothing
 		}
 	}
 	@Override
@@ -92,7 +143,7 @@ public class Panel extends JPanel implements KeyListener {
 			world.addMessage("Theme: \"Transmission\"");
 			world.addMessage("");
 			world.addMessage("\"Service unavailable\" - Your Phone");
-			world.addMessage("[Press Enter]");
+			world.addMessage("[Press Enter to start or press L to load a custom level]");
 			intro--;
 			repaint();
 			return;

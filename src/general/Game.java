@@ -1,4 +1,11 @@
 package general;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import javax.swing.JFrame;
 
 public class Game {
@@ -6,14 +13,21 @@ public class Game {
 		try {
 		System.setProperty("sun.java2d.opengl", "true");
 		JFrame frame = new JFrame("Brain Waves by Alex Chen");
-		World world;
 		
-		//User can specify a custom level here
-		if(args.length == 1) {
-			world = new World(args[0]);
-		} else {
-			world = new World("./src/general/Level1");
+		String path = "./src/general/Level1.txt";
+		
+		File f = new File("./Brain Waves Levels/Level1.txt");
+		if(!f.exists()) {
+			f.getParentFile().mkdir();
+			f.createNewFile();
+			byte[] encoded = Files.readAllBytes(Paths.get(path));
+			String level = new String(encoded, StandardCharsets.UTF_8);
+			BufferedWriter w = new BufferedWriter(new FileWriter(f));
+			w.write(level);
+			w.close();
 		}
+		
+		World world = new World(path);
 		
 		Panel panel = new Panel(world);
 		frame.add(panel);

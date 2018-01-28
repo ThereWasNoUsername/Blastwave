@@ -38,7 +38,7 @@ public class Light extends Entity {
 
 	@Override
 	public BufferedImage getTile() {
-		return brightness > 0 ? world.tiles.light : world.tiles.light_emp;
+		return brightness > 0 ? world.res.light : world.res.light_emp;
 	}
 	@Override
 	public void alert() {}

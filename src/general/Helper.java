@@ -2,10 +2,28 @@ package general;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+
 public class Helper {
+	public static void playSound(File f, float volumeInc) {
+		try {
+	        Clip c = AudioSystem.getClip();
+	        c.open(AudioSystem.getAudioInputStream(f));
+	        FloatControl volume = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
+	        volume.setValue(volumeInc); // Reduce volume by 10 decibels.
+	        c.setFramePosition(0);
+	        c.start();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 	public static boolean lineOfSight(World w, Point start, Point end) {
 		double distance = start.distance(end);
 		List<Point> points = new ArrayList<>();

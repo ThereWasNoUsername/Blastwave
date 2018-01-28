@@ -17,7 +17,6 @@ public class Camera extends Entity {
 	public void update() {
 		empTicks--;
 		
-		System.out.println("Camera update");
 		visibility = new boolean[world.width][world.height];
 		
 		if(empTicks > 0)
@@ -58,12 +57,8 @@ public class Camera extends Entity {
 		//If we can see the player, alert!
 		Point playerPos = world.player.getPos();
 		if(visibility[playerPos.x][playerPos.y]) {
-			try {
-				//throw new Exception("Implement");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			Helper.playSound(world.res.sound_spotted, -5);
+			world.addMessage("You've been spotted!");
 			world.alert(pos, range);
 		}
 	}
@@ -76,8 +71,8 @@ public class Camera extends Entity {
 	@Override
 	public BufferedImage getTile() {
 		if(empTicks > 0)
-			return world.getBrightness(pos) > 128 ? world.tiles.camera_emp : world.tiles.camera_dark_emp;
-		return world.getBrightness(pos) > 128 ? world.tiles.camera : world.tiles.camera_dark;
+			return world.getBrightness(pos) > 128 ? world.res.camera_emp : world.res.camera_dark_emp;
+		return world.getBrightness(pos) > 128 ? world.res.camera : world.res.camera_dark;
 	}
 	@Override
 	public void alert() { }

@@ -29,9 +29,9 @@ public class Relay extends Entity {
 	@Override
 	public BufferedImage getTile() {
 		if(empTicks > 0) {
-			return world.getBrightness(pos) > 128 ? world.tiles.relay_emp : world.tiles.relay_dark_emp;
+			return world.getBrightness(pos) > 128 ? world.res.relay_emp : world.res.relay_dark_emp;
 		}
-		return world.getBrightness(pos) > 128 ? world.tiles.relay : world.tiles.relay_dark;
+		return world.getBrightness(pos) > 128 ? world.res.relay : world.res.relay_dark;
 	}
 
 	@Override

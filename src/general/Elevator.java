@@ -50,14 +50,14 @@ public class Elevator extends Entity {
 	@Override
 	public BufferedImage getTile() {
 		if(empTicks > 0) {
-			return world.getBrightness(pos) > 128 ? world.tiles.elevator_emp : world.tiles.elevator_dark_emp;
+			return world.getBrightness(pos) > 128 ? world.res.elevator_emp : world.res.elevator_dark_emp;
 		}
-		return world.getBrightness(pos) > 128 ? world.tiles.elevator : world.tiles.elevator_dark;
+		return world.getBrightness(pos) > 128 ? world.res.elevator : world.res.elevator_dark;
 	}
 
 	@Override
 	public void alert() {
-		guardsLeft += 2;
+		guardsLeft += 1;
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class Elevator extends Entity {
 	@Override
 	public void emp() {
 		world.addMessage("You hear an elevator slowing down to a halt");
-		empTicks = 12;
+		empTicks = 24;
 	}
 	
 }
