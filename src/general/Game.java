@@ -12,11 +12,11 @@ public class Game {
 	public static void main(String[] args) {
 		try {
 		System.setProperty("sun.java2d.opengl", "true");
-		JFrame frame = new JFrame("Brain Waves by Alex Chen");
+		JFrame frame = new JFrame("Blastwave");
 		
 		String path = "./src/general/Level1.txt";
 		
-		File f = new File("./Brain Waves Levels/Level1.txt");
+		File f = new File("./Blastwave Levels/Level1.txt");
 		if(!f.exists()) {
 			f.getParentFile().mkdir();
 			f.createNewFile();

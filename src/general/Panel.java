@@ -136,8 +136,8 @@ public class Panel extends JPanel implements KeyListener {
 		switch(intro) {
 		case 5:
 			world.clearMessages();
-			world.addMessage("\"Brain Waves\"");
-			world.addMessage("By Alex Chen (achen115@ucr.edu)");
+			world.addMessage("\"Blastwave\"");
+			world.addMessage("by Alex Chen");
 			world.addMessage("A strategic stealth roguelike");
 			world.addMessage("Made for Global Game Jam 2018.");
 			world.addMessage("Theme: \"Transmission\"");
@@ -179,11 +179,11 @@ public class Panel extends JPanel implements KeyListener {
 			world.addMessage("And while you're at it, why don't you demonstrate proof...");
 			world.addMessage("Of your supernatural control over the airwaves?");
 			world.addMessage("Use the arrow keys to move. If you find yourself trapped...");
-			world.addMessage("Press F to unleash a wave blast that disables nearby lights...");
+			world.addMessage("Press F to unleash a blastwave that disables nearby lights...");
 			world.addMessage("Along with nearby wireless communications.");
 			world.addMessage("It also creates a huge distraction and dazes guards.");
 			world.addMessage("Remember: Stay dark, stay quiet, and stay out of red.");
-			world.addMessage("Don't forget to use your wave blast to save yourself!");
+			world.addMessage("Don't forget to use your blastwave to save yourself!");
 			world.addMessage("[Press Enter]");
 			intro--;
 			repaint();
@@ -200,7 +200,7 @@ public class Panel extends JPanel implements KeyListener {
 			world.addMessage(".       Floor");
 			world.addMessage("#       Wall");
 			world.addMessage("");
-			world.addMessage("Begin. Move with arrow keys and use a wave blast with F");
+			world.addMessage("Begin. Move with arrow keys and use a Blastwave with F");
 			intro--;
 			repaint();
 			return;

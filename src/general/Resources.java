@@ -35,20 +35,14 @@ public class Resources {
 	
 	public final BufferedImage exit;
 	
-	private final String TILES_DIR = "./Brain Waves Tiles";
+	private final String TILES_DIR = "./Blastwave Tiles";
 	
 	private final String SOUNDS_DIR = "./src/Sounds";
 	
 	public final File sound_spotted = new File(SOUNDS_DIR + File.separator + "Spotted.wav");
 	public final File sound_shoot = new File(SOUNDS_DIR + File.separator + "Shoot.wav");
 	public final File sound_strike = new File(SOUNDS_DIR + File.separator + "Strike.wav");
-	public final File sound_wave_blast = new File(SOUNDS_DIR + File.separator + "Wave Blast.wav");
-	/*
-	public final AudioInputStream sound_spotted;
-	public final AudioInputStream sound_shoot;
-	public final AudioInputStream sound_strike;
-	public final AudioInputStream sound_wave_blast;
-	*/
+	public final File sound_blastwave = new File(SOUNDS_DIR + File.separator + "Blastwave.wav");
 	public Resources() {
 		File dir = new File(TILES_DIR);
 		if(!dir.exists()) {
@@ -104,22 +98,6 @@ public class Resources {
 		elevator_dark_emp = loadDarkTile("elevator_dark_emp.png", 'L');
 		
 		exit = loadTile("exit.png", 'X');
-		
-		/*
-		AudioInputStream sound_spotted = null, sound_shoot = null, sound_strike = null, sound_wave_blast = null;
-		try {
-			sound_spotted = AudioSystem.getAudioInputStream(new File(SOUNDS_DIR + File.separator + "Spotted.wav"));
-			sound_shoot = AudioSystem.getAudioInputStream(new File(SOUNDS_DIR + File.separator + "Shoot.wav"));
-			sound_strike = AudioSystem.getAudioInputStream(new File(SOUNDS_DIR + File.separator + "Strike.wav"));
-			sound_wave_blast = AudioSystem.getAudioInputStream(new File(SOUNDS_DIR + File.separator + "Wave Blast.mp3"));
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		this.sound_spotted = sound_spotted;
-		this.sound_shoot = sound_shoot;
-		this.sound_strike = sound_strike;
-		this.sound_wave_blast = sound_wave_blast;
-		*/
 	}
 	//Loads a tile from the specified image filename (from src/tile) or defaults to the specified char
 	public BufferedImage loadTile(String filename, char defaultChar) {
