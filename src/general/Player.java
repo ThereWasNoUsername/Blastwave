@@ -47,7 +47,7 @@ public class Player extends Entity {
 	public void update() {
 		empCooldown--;
 		if(empRadius > 0) {
-			Helper.playSound(world.res.sound_wave_blast, -7);
+			Helper.playSound(world.res.sound_blastwave, -7);
 			
 			//EMP makes a loud noise
 			world.alert(pos, empRadius * 3);
