@@ -1,4 +1,4 @@
-# Global-Game-Jam-2018
-Game Entry by Alex Chen (achen115@ucr.edu) for Global Game Jam 2018.
+# BrainWaves
+Submission for Global Game Jam 2018 (Transmission).
 
-The game is called "Brain Waves" and it is an ASCII roguelike about a person with a supernatural power over waves and transmissions. Download and Run the JAR file named "Brain Waves by Alex Chen" to play or build your own copy.
+Brain Waves is a single-level ASCII roguelike inspired by Stephen King's Firestarter. Escape an unidentified government facility as a person with a supernatural ability - unleash a ringing shockwave that knocks out devices and the guards that control them! Hide in the dark to stay invisible; then find the exit and escape!
