@@ -14,20 +14,7 @@ public class Game {
 		System.setProperty("sun.java2d.opengl", "true");
 		JFrame frame = new JFrame("Blastwave");
 		
-		String path = "./src/general/Level1.txt";
-		
-		File f = new File("./Blastwave Levels/Level1.txt");
-		if(!f.exists()) {
-			f.getParentFile().mkdir();
-			f.createNewFile();
-			byte[] encoded = Files.readAllBytes(Paths.get(path));
-			String level = new String(encoded, StandardCharsets.UTF_8);
-			BufferedWriter w = new BufferedWriter(new FileWriter(f));
-			w.write(level);
-			w.close();
-		}
-		
-		World world = new World(path);
+		World world = new World("./Blastwave Levels/Level1.txt");
 		
 		Panel panel = new Panel(world);
 		frame.add(panel);
